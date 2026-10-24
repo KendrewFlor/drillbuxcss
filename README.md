@@ -4,7 +4,7 @@
 
 Drill five offshore fields, kill kicks on a live choke panel using your own IWCF kill sheet, make production decisions, handle HSE calls and storms, and close each field with a full engineering-economics report. Meanwhile the crate store tries to take your money, until you flip to Regulator mode and see how it works.
 
-## [▶ Play in your browser](https://kendrewflor.github.io/drillbux-css/)
+## [▶ Play in your browser](https://kendrewflor.github.io/drillbuxcss/)
 
 ![Drillbux CSS Edition: an offshore jack-up rig drawn entirely in CSS, producing with its flare lit](docs/screenshot-hero.png)
 
