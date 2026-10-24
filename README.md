@@ -1,4 +1,4 @@
-# Drillbux — CSS Edition
+# Drillbux — Javascript but better Edition
 
 **A better satirical AAA microtransaction simulator built on real petroleum engineering, with an offshore rig drawn entirely in Javascript with a lil touch of CSS**
 
