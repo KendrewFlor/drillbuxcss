@@ -1,6 +1,6 @@
 # Drillbux — CSS Edition
 
-**A satirical AAA microtransaction simulator built on real petroleum engineering, with an offshore rig drawn entirely in CSS.**
+**A better satirical AAA microtransaction simulator built on real petroleum engineering, with an offshore rig drawn entirely in Javascript with a lil touch of CSS**
 
 Drill five offshore fields, kill kicks on a live choke panel using your own IWCF kill sheet, make production decisions, handle HSE calls and storms, and close each field with a full engineering-economics report. Meanwhile the crate store tries to take your money, until you flip to Regulator mode and see how it works.
 
@@ -62,7 +62,7 @@ The field report also shows how much NPV your crate spending cost.
 
 ![Regulator mode](docs/screenshot-regulator.png)
 
-**All purchases are simulated.** There is no payment code anywhere in this repository.
+**All purchases are simulated.** There is no payment code anywhere in this repository. You may do as you wish, ma'am/sir.
 
 ## The engineering
 
@@ -80,7 +80,7 @@ Equations, assumptions and parameter ranges are in [docs/PETROLEUM_MODEL.md](doc
 
 ## Run it locally
 
-No install step. Node 20+ is needed only for the dev server and checks.
+No install step. Node 20+ is needed only for the dev server and checks. hehe.
 
 ```sh
 npm start        # http://127.0.0.1:5173
