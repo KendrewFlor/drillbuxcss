@@ -1,0 +1,286 @@
+/* ===================================================================
+   Pure-CSS 3D rig. Materials mix toward night blue by --dark (0–58%).
+   =================================================================== */
+.stage {
+  --dark: 0%;
+  --day: 1;
+  --night-ink: #07141c;
+  --derrick: #e8e3d0;
+  --flare: #ff8a2a;
+  --oil: 1;
+  --sun-x: 70%;
+  --sun-y: 20%;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #0d2a33;
+}
+
+/* ---------- sky ---------- */
+.sky {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, #2f6f93, #050d18 var(--dark)) 0%,
+      color-mix(in srgb, #bcd3dc, #12233a var(--dark)) 52%,
+      color-mix(in srgb, #8fb4c2, #0a1a26 var(--dark)) 62%,
+      color-mix(in srgb, #0f3c4a, #04121a var(--dark)) 100%);
+  transition: background 0.6s linear;
+}
+.sun {
+  position: absolute; left: var(--sun-x); top: var(--sun-y);
+  width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%;
+  background: radial-gradient(circle, #fff7da 0 30%, rgba(255, 220, 140, 0.55) 45%, transparent 70%);
+  opacity: calc(var(--day) * 1);
+}
+.stars {
+  position: absolute; inset: 0 0 45% 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 33% 9%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 58% 22%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 72% 12%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 86% 30%, #fff 50%, transparent 51%), radial-gradient(1.5px 1.5px at 22% 36%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 46% 40%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 92% 6%, #fff 50%, transparent 51%);
+  opacity: calc(1 - var(--day));
+}
+
+/* ---------- 3D scaffolding ---------- */
+.viewport {
+  position: absolute; inset: 0;
+  perspective: 1500px;
+  perspective-origin: 50% 42%;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+.viewport:active { cursor: grabbing; }
+.viewport:focus-visible { box-shadow: inset 0 0 0 3px #ffd23f; }
+.camera, .world, .g3 {
+  position: absolute; left: 50%; top: 50%;
+  width: 0; height: 0;
+  transform-style: preserve-3d;
+}
+.face {
+  position: absolute;
+  backface-visibility: visible;
+  transform-style: preserve-3d;
+}
+/* Directional shading: a translucent black overlay per side */
+.face::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: rgba(0, 0, 0, var(--shade, 0)); }
+.side-front { --shade: 0; }
+.side-right { --shade: 0.18; }
+.side-left { --shade: 0.28; }
+.side-back { --shade: 0.36; }
+.side-top { --shade: -0; }
+.side-bottom { --shade: 0.55; }
+
+/* ---------- materials ---------- */
+.mat-hull { background: color-mix(in srgb, #ff6a13, var(--night-ink) var(--dark)); }
+.mat-hivis { background: color-mix(in srgb, #ff6a13, var(--night-ink) var(--dark)); }
+.mat-yellow { background: color-mix(in srgb, #ffd23f, var(--night-ink) var(--dark)); }
+.mat-steel { background: color-mix(in srgb, #8d9ba2, var(--night-ink) var(--dark)); }
+.mat-white { background: color-mix(in srgb, #eef2f1, var(--night-ink) var(--dark)); }
+.mat-conductor { background: color-mix(in srgb, #4d5a60, var(--night-ink) var(--dark)); }
+.mat-pipe { background: linear-gradient(180deg, color-mix(in srgb, #7a8a90, var(--night-ink) var(--dark)), color-mix(in srgb, #3c4a50, var(--night-ink) var(--dark))); }
+.mat-tank { background: color-mix(in srgb, #2f6f6a, var(--night-ink) var(--dark)); }
+.mat-pump { background: color-mix(in srgb, #1f5fa8, var(--night-ink) var(--dark)); }
+.mat-boat { background: color-mix(in srgb, #1f6fb2, var(--night-ink) var(--dark)); }
+.mat-container-a { background: color-mix(in srgb, #c43d2b, var(--night-ink) var(--dark)); }
+.mat-container-b { background: color-mix(in srgb, #2b8a4b, var(--night-ink) var(--dark)); }
+.mat-container-c { background: color-mix(in srgb, #e0a020, var(--night-ink) var(--dark)); }
+.mat-crate { background: repeating-linear-gradient(90deg, #4a3417 0 10px, #5c4220 10px 20px); border: 3px solid var(--rar, #ffd23f); box-shadow: 0 0 18px var(--rar, #ffd23f); }
+
+.deck-grid {
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 30px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 30px),
+    color-mix(in srgb, #7c8a90, var(--night-ink) var(--dark));
+}
+.deck-border { border: 8px solid; border-image: repeating-linear-gradient(45deg, #ffd23f 0 10px, #1a1a1a 10px 20px) 8; }
+.hull-name { display: flex; align-items: center; justify-content: center; }
+.hull-name::before {
+  content: "DRILLBUX-1"; font: 800 26px/1 "Bahnschrift", "DIN Alternate", "Arial Narrow", sans-serif; letter-spacing: 0.12em;
+  color: color-mix(in srgb, #ffffff, var(--night-ink) var(--dark));
+  border-top: 4px solid currentColor; border-bottom: 4px solid currentColor; padding: 4px 10px;
+}
+.boat-name::before { content: "SV PETROLINK"; position: absolute; left: 10px; top: 5px; font: 700 11px "Arial Narrow", sans-serif; color: #fff; letter-spacing: 0.1em; }
+.windows, .cab-window {
+  --wall: color-mix(in srgb, #eef2f1, var(--night-ink) var(--dark));
+  --win: color-mix(in srgb, #3b5563, #ffd98a calc(100% - var(--day) * 100%));
+  background:
+    repeating-linear-gradient(0deg, var(--wall) 0 9px, transparent 9px 24px),
+    repeating-linear-gradient(90deg, var(--wall) 0 7px, var(--win) 7px 19px);
+}
+.night .windows, .night .cab-window { box-shadow: 0 0 22px rgba(255, 217, 138, 0.25); }
+.substructure {
+  background:
+    linear-gradient(45deg, transparent 47%, color-mix(in srgb, #5e6c73, var(--night-ink) var(--dark)) 47% 53%, transparent 53%),
+    linear-gradient(-45deg, transparent 47%, color-mix(in srgb, #5e6c73, var(--night-ink) var(--dark)) 47% 53%, transparent 53%),
+    color-mix(in srgb, #8d9ba2, var(--night-ink) var(--dark));
+  background-size: 40px 40px;
+}
+
+/* ---------- lattice steel ---------- */
+.lattice, .derrick-face {
+  --lat: color-mix(in srgb, #ffd23f, var(--night-ink) var(--dark));
+  background:
+    linear-gradient(90deg, var(--lat) 0 4px, transparent 4px calc(100% - 4px), var(--lat) calc(100% - 4px)),
+    repeating-linear-gradient(0deg, var(--lat) 0 3px, transparent 3px 38px),
+    repeating-linear-gradient(42deg, transparent 0 22px, var(--lat) 22px 24px, transparent 24px 52px),
+    repeating-linear-gradient(-42deg, transparent 0 22px, var(--lat) 22px 24px, transparent 24px 52px);
+}
+.lattice-steel { --lat: color-mix(in srgb, #9aa7ad, var(--night-ink) var(--dark)); }
+.derrick-face {
+  --lat: color-mix(in srgb, var(--derrick), var(--night-ink) var(--dark));
+  background:
+    linear-gradient(90deg, var(--lat) 0 5px, transparent 5px calc(100% - 5px), var(--lat) calc(100% - 5px)),
+    repeating-linear-gradient(0deg, var(--lat) 0 3px, transparent 3px 34px),
+    repeating-linear-gradient(60deg, transparent 0 18px, var(--lat) 18px 20px, transparent 20px 40px),
+    repeating-linear-gradient(-60deg, transparent 0 18px, var(--lat) 18px 20px, transparent 20px 40px);
+}
+.skin-glow .derrick-face { filter: drop-shadow(0 0 6px var(--derrick)); }
+.lattice::after, .derrick-face::after { display: none; }
+
+/* ---------- moving parts ---------- */
+.drill-pipe {
+  width: 6px; margin-left: -3px;
+  background: repeating-linear-gradient(180deg, #4f5d63 0 28px, #2a3438 28px 30px);
+  transform-style: flat;
+}
+.is-drilling .drill-pipe { animation: pipe-spin 0.25s linear infinite; }
+@keyframes pipe-spin { to { background-position: 0 30px; } }
+.drill-line { width: 2px; height: 260px; top: -260px; margin-left: -1px; background: #222; }
+.beacon { width: 10px; height: 10px; margin: -5px; border-radius: 50%; background: #ff3b3b; box-shadow: 0 0 14px 4px rgba(255, 59, 59, 0.8); animation: blink 1.6s steps(2) infinite; }
+.leg-light { width: 8px; height: 8px; margin: -4px; border-radius: 50%; background: #ff3b3b; box-shadow: 0 0 10px 3px rgba(255, 59, 59, 0.7); animation: blink 2s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.15; } }
+
+.crane-slew { animation: slew 40s ease-in-out infinite alternate; }
+@keyframes slew { from { rotate: y 0deg; } to { rotate: y 35deg; } }
+
+.boat-orbit { animation: orbit 90s linear infinite; }
+@keyframes orbit { to { transform: rotateY(-360deg); } }
+
+/* ---------- flare ---------- */
+.flame { display: none; }
+.is-producing .flame { display: block; }
+.flame-plane {
+  background: radial-gradient(ellipse 50% 60% at 50% 80%, #fff6c8 0%, var(--flare) 35%, color-mix(in srgb, var(--flare), transparent 60%) 60%, transparent 72%);
+  animation: flicker 0.18s ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+.flare-glow { width: 260px; height: 260px; margin: -130px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--flare), transparent 55%), transparent 65%); }
+.flame-core { background: radial-gradient(ellipse at 50% 80%, #fff 0%, #fff2b0 40%, transparent 70%); animation-duration: 0.11s; }
+@keyframes flicker { from { scale: 1 1; opacity: 0.85; } to { scale: 1.08 1.18; opacity: 1; } }
+
+/* ---------- helideck ---------- */
+.helideck-top {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 52%, #ffd23f 52% 57%, transparent 57%),
+    color-mix(in srgb, #2d4a3a, var(--night-ink) var(--dark));
+  border: 4px solid color-mix(in srgb, #eef2f1, var(--night-ink) var(--dark));
+  display: flex; align-items: center; justify-content: center;
+}
+.helideck-h {
+  --paint: color-mix(in srgb, #ffffff, var(--night-ink) var(--dark));
+  width: 56px; height: 70px;
+  background:
+    linear-gradient(var(--paint), var(--paint)) left / 14px 100% no-repeat,
+    linear-gradient(var(--paint), var(--paint)) right / 14px 100% no-repeat,
+    linear-gradient(var(--paint), var(--paint)) center / 100% 12px no-repeat;
+}
+
+/* ---------- ocean ---------- */
+.ocean {
+  background: color-mix(in srgb, #1d6378, #06202b var(--dark));
+  opacity: 0.94;
+  overflow: hidden;
+  transition: opacity 0.6s;
+  -webkit-mask: radial-gradient(circle, #000 35%, transparent 70%);
+  mask: radial-gradient(circle, #000 35%, transparent 70%);
+}
+.ocean-waves {
+  position: absolute; inset: -200px;
+  background:
+    repeating-radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.07) 0 2px, transparent 2px 46px),
+    repeating-linear-gradient(15deg, rgba(255, 255, 255, 0.05) 0 3px, transparent 3px 60px),
+    repeating-linear-gradient(-25deg, rgba(0, 0, 0, 0.08) 0 6px, transparent 6px 80px);
+  animation: waves 14s linear infinite;
+}
+.storm .ocean-waves { animation-duration: 4s; }
+@keyframes waves { to { transform: translate(120px, 80px); } }
+.foam {
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 28%, rgba(255, 255, 255, 0.55) 32%, transparent 48%);
+  animation: foam 3s ease-out infinite;
+}
+@keyframes foam { from { scale: 0.7; opacity: 1; } to { scale: 1.3; opacity: 0; } }
+.xray .ocean { opacity: 0.22; }
+
+/* ---------- subsurface cutaway ---------- */
+.seabed { background: color-mix(in srgb, #5a5440, var(--night-ink) var(--dark)); opacity: 0.9; }
+.xray .seabed { opacity: 0.35; }
+.subsurface, .wellbore { display: none; }
+.xray .subsurface, .xray .wellbore { display: block; }
+.stratum-face { opacity: 0.8; display: flex; align-items: flex-start; }
+.stratum-alluvium { background: repeating-linear-gradient(0deg, #8a7a5c 0 10px, #7d6f53 10px 14px); }
+.stratum-miocene { background: repeating-linear-gradient(0deg, #6f6a58 0 6px, #8a8366 6px 14px); }
+.stratum-shale { background: repeating-linear-gradient(-8deg, #4b4f55 0 4px, #3e4247 4px 8px); }
+.stratum-cap { background: repeating-linear-gradient(90deg, #9a9384 0 30px, #8a8374 30px 32px), #9a9384; }
+.stratum-reservoir {
+  background:
+    radial-gradient(circle at 30% 50%, rgba(255, 170, 40, calc(var(--oil) * 0.9)), transparent 60%),
+    repeating-radial-gradient(circle, #c29a4a 0 2px, #b08940 2px 5px);
+  box-shadow: inset 0 0 40px rgba(255, 150, 20, calc(var(--oil) * 0.8));
+}
+.stratum-label { font: 600 24px "Bahnschrift", "Arial Narrow", sans-serif; color: #fff; padding: 6px 10px; text-shadow: 0 1px 2px #000; }
+.well-pipe { width: 4px; margin-left: -2px; background: #ffd23f; box-shadow: 0 0 6px #ffd23f; }
+.casing { width: 14px; margin-left: -7px; border-left: 3px solid #cfd8dc; border-right: 3px solid #cfd8dc; }
+.casing::after { content: ""; position: absolute; bottom: -6px; left: -9px; border: 6px solid transparent; border-top-color: #cfd8dc; }
+.casing-surface { width: 22px; margin-left: -11px; }
+.bit-glow { width: 16px; height: 16px; margin: -8px; border-radius: 50%; background: #ffb000; box-shadow: 0 0 12px 4px rgba(255, 176, 0, 0.6); }
+.bit-glow.in-reservoir { background: #fff2a8; box-shadow: 0 0 30px 12px rgba(255, 176, 0, 0.9); animation: pulse-glow 1s ease-in-out infinite alternate; }
+@keyframes pulse-glow { to { box-shadow: 0 0 46px 20px rgba(255, 140, 0, 0.9); } }
+
+/* ---------- crate drop & burst ---------- */
+.crate { display: none; }
+.crate.play { display: block; animation: crate-drop 3.4s cubic-bezier(.3, .7, .4, 1) forwards; }
+.crate.play.fast { animation-duration: 1.3s; }
+.crate.play .box { animation: crate-spin 3.4s ease-in forwards; }
+.crate.play.fast .box { animation-duration: 1.3s; }
+@keyframes crate-drop {
+  0% { translate: 0 -400px; } 30% { translate: 0 210px; } 36% { translate: 0 190px; } 42% { translate: 0 210px; } 100% { translate: 0 200px; }
+}
+@keyframes crate-spin {
+  0%, 40% { rotate: y 0deg; scale: 1; opacity: 1; } 85% { rotate: y 1080deg; scale: 1.2; opacity: 1; } 88%, 100% { rotate: y 1200deg; scale: 0; opacity: 0; }
+}
+.spark { position: absolute; width: 8px; height: 8px; margin: -4px; border-radius: 50%; background: var(--rar, #ffd23f); box-shadow: 0 0 10px var(--rar, #ffd23f); opacity: 0; }
+.crate.play .spark { animation: spark 3.4s ease-out forwards; }
+.crate.play.fast .spark { animation-duration: 1.3s; }
+@keyframes spark {
+  0%, 84% { transform: translate3d(0, 200px, 0); opacity: 0; }
+  86% { opacity: 1; transform: translate3d(0, 200px, 0); }
+  100% { transform: translate3d(var(--dx), calc(200px + var(--dy)), var(--dz)); opacity: 0; }
+}
+
+/* ---------- weather ---------- */
+.weather { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s; }
+.storm .weather { opacity: 1; }
+.storm { --dark: 45% !important; }
+.rain {
+  position: absolute; inset: -50px;
+  background: repeating-linear-gradient(105deg, transparent 0 14px, rgba(200, 220, 235, 0.35) 14px 15px, transparent 15px 40px);
+  animation: rain 0.35s linear infinite;
+}
+@keyframes rain { to { transform: translate(-12px, 40px); } }
+.lightning { position: absolute; inset: 0; background: #e8f4ff; opacity: 0; animation: lightning 7s infinite; }
+@keyframes lightning { 0%, 92%, 95%, 100% { opacity: 0; } 93% { opacity: 0.55; } 94% { opacity: 0.1; } 94.5% { opacity: 0.4; } }
+
+/* Low graphics: stop ambient animations (they force full-scene repaints on slow GPUs) */
+.lite .ocean-waves, .lite .foam, .lite .boat-orbit, .lite .crane-slew, .lite .rain, .lite .lightning,
+.lite .beacon, .lite .leg-light, .lite .bit-glow.in-reservoir { animation: none !important; }
+.lite .foam, .lite .stars { display: none; }
+.lite .ocean { -webkit-mask: none; mask: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ocean-waves, .foam, .boat-orbit, .crane-slew, .rain, .lightning, .beacon, .leg-light, .flame-plane, .bit-glow.in-reservoir { animation: none !important; }
+}

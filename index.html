@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Strict CSP: only same-origin scripts/styles, no network calls, no inline script. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; manifest-src 'none'; worker-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Drillbux CSS Edition: a satirical AAA microtransaction simulator with a pure-CSS 3D offshore rig, IWCF well control and real petroleum engineering math.">
+  <title>Drillbux — CSS Edition</title>
+  <link rel="stylesheet" href="./src/rig.css">
+  <link rel="stylesheet" href="./src/style.css">
+  <link rel="icon" href="data:,">
+</head>
+<body class="mode-aaa">
+  <div class="stage" id="stage"></div>
+  <div id="app"></div>
+  <noscript><p class="noscript">Drillbux needs JavaScript.</p></noscript>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

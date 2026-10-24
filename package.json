@@ -1,0 +1,20 @@
+{
+  "name": "drillbux-css",
+  "version": "2.0.0",
+  "description": "Drillbux CSS Edition — a satirical AAA microtransaction simulator with a pure-CSS 3D offshore rig, IWCF well control and real petroleum engineering math.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "Kendrew Flor S. Arrabe",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "scan": "node scripts/security-scan.mjs",
+    "check": "node scripts/security-scan.mjs && node --test tests/*.test.mjs"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
